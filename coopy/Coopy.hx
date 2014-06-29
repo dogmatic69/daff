@@ -260,6 +260,7 @@ class Coopy {
             io.writeStderr("  daff [--output OUTPUT.csv] parent.csv a.csv b.csv\n");
             io.writeStderr("  daff [--output OUTPUT.jsonbook] a.jsonbook b.jsonbook\n");
             io.writeStderr("  daff patch [--output OUTPUT.csv] source.csv patch.csv\n");
+            io.writeStderr("  daff merge [--inplace] [--output OUTPUT.csv] parent.csv a.csv b.csv\n");
             io.writeStderr("  daff trim [--output OUTPUT.csv] source.csv\n");
             io.writeStderr("  daff render [--output OUTPUT.html] diff.csv\n");
             io.writeStderr("\n");
@@ -282,7 +283,7 @@ class Coopy {
         var offset : Int = 1;
         // "diff" is optional when followed by a filename with a dot in it,
         // or by an --option.
-        if (!Lambda.has(["diff","patch","trim","render"],cmd)) {
+        if (!Lambda.has(["diff","patch","merge","trim","render"],cmd)) {
             if (cmd.indexOf(".")!=-1 || cmd.indexOf("--")==0) {
                 cmd = "diff";
                 offset = 0;
@@ -300,6 +301,7 @@ class Coopy {
         if (args.length-offset>=2) {
             b = tool.loadTable(args[1+offset]);
         }
+        var ok : Bool = true;
         if (cmd=="diff") {
             var ct : CompareTable = compareTables3(parent,a,b);
             var align : Alignment = ct.align();
@@ -310,6 +312,10 @@ class Coopy {
         } else if (cmd=="patch") {
             var patcher : HighlightPatch = new HighlightPatch(a,b);
             patcher.apply();
+            tool.saveTable(output,a);
+        } else if (cmd=="merge") {
+            var merger : Merger = new Merger(parent,a,b);
+            ok = merger.apply();
             tool.saveTable(output,a);
         } else if (cmd=="trim") {
             tool.saveTable(output,a);
@@ -325,7 +331,7 @@ class Coopy {
                 tool.saveText(css_output,renderer.sampleCss());
             }
         }
-        return 0;
+        return ok?0:1;
     }
 #end
 
