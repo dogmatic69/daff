@@ -20,6 +20,7 @@ install:
   - haxelib setup ~/haxelib
   - haxelib install hxcpp
   - haxelib install hxjava
+  - sudo apt-get install mono-mcs
   - haxelib install hxcs
 
 script:

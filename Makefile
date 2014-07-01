@@ -57,6 +57,7 @@ php:
 
 java:
 	haxe language/java.hxml
+	ls java_bin
 	mv java_bin/java_bin.jar java_bin/daff.jar
 	cp scripts/JavaTableView.java java_bin/src/coopy
 	cp scripts/Example.java java_bin
