@@ -18,3 +18,7 @@ install:
  
 script:
   - make test
+  - make php   # make sure other languages at least generate
+  - make java
+  - make py
+  - make cs
